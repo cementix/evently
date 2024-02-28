@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import NavItems from "@/components/shared/NavItems";
+import MobileNav from "@/components/shared/MobileNav";
 
 const Header = () => {
   return (
@@ -16,9 +18,16 @@ const Header = () => {
           />
         </Link>
 
-        <div className="flex w-32 justify-end">
+        <SignedIn>
+          <nav className="md:flex-between hidden w-full max-w-xs">
+            <NavItems />
+          </nav>
+        </SignedIn>
+
+        <div className="flex w-32 gap-3 justify-end">
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
+            <MobileNav />
           </SignedIn>
           <SignedOut>
             <Button asChild className="rounded-full" size="lg">
