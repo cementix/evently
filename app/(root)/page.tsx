@@ -1,8 +1,19 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { prisma } from "../db";
 
-export default function Home() {
+export default async function Home() {
+  await prisma.user.create({
+    data: {
+      clerkId: "fsg",
+      email: "fsg",
+      username: "cementosss",
+      firstName: "Bohdan",
+      lastName: "Cementi",
+      photo: "nemaye",
+    },
+  });
   return (
     <>
       <section className="bg-primary-50 bg-dotten-pattern bg-contain py-5 md:py-10">
