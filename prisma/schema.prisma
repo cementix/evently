@@ -8,18 +8,21 @@ datasource db {
 }
 
 model User {
-  clerkId   String   @id @unique
-  email     String   @unique
-  username  String   @unique
-  firstName String
-  lastName  String
-  photo     String
-  createdAt DateTime @default(now())
-  updatetAt DateTime @updatedAt
+  clerkId         String   @id @unique
+  email           String   @unique
+  username        String   @unique
+  firstName       String
+  lastName        String
+  photo           String
+  createdAt       DateTime @default(now())
+  updatetAt       DateTime @updatedAt
+  orders          Order[]
+  organizedEvents Event[]
 }
 
 model Event {
-  title         String    @id
+  id            String    @id @default(uuid())
+  title         String
   description   String?
   location      String?
   imageUrl      String
@@ -28,8 +31,28 @@ model Event {
   price         String?
   isFree        Boolean?  @default(false)
   url           String?
-  // category
-  // organizer
+  category      Category  @relation(fields: [categoryName], references: [name])
+  categoryName  String
+  organizer     User      @relation(fields: [organizerId], references: [clerkId])
+  organizerId   String
   createdAt     DateTime  @default(now())
   updatetAt     DateTime  @updatedAt
+  orders        Order[]
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  events    Event[]
+  createdAt DateTime @default(now())
+  updatetAt DateTime @updatedAt
+}
+
+model Order {
+  stripeId    String @unique
+  totalAmount String
+  event       Event  @relation(fields: [eventId], references: [id])
+  eventId     String
+  buyer       User   @relation(fields: [userId], references: [clerkId])
+  userId      String
 }

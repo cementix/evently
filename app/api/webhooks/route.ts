@@ -2,6 +2,9 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { prisma } from "@/app/db";
+import { clerkClient } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+import { handleError } from "@/lib/utils";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -54,18 +57,81 @@ export async function POST(req: Request) {
   const eventType = evt.type;
 
   if (eventType === "user.created") {
-    const { id, email_addresses, image_url, first_name, last_name, username } =
-      evt.data;
-    const user = {
-      clerkId: id,
-      email: email_addresses[0].email_address,
-      username: username,
-      firstName: first_name,
-      lastName: last_name,
-      photo: image_url,
-    };
-    // Я начав це писать, дивись по гайду як чел шось пише в утілсах і создає екшн для креейта юзера
-    // const newUser = await prisma.;
+    try {
+      const {
+        id,
+        email_addresses,
+        image_url,
+        first_name,
+        last_name,
+        username,
+      } = evt.data;
+      const user = {
+        clerkId: id,
+        email: email_addresses[0].email_address,
+        username: username!,
+        firstName: first_name,
+        lastName: last_name,
+        photo: image_url,
+      };
+
+      const newUser = await prisma.user.create({
+        data: user,
+      });
+
+      if (newUser) {
+        await clerkClient.users.updateUserMetadata(id, {
+          publicMetadata: {
+            userId: newUser.clerkId,
+          },
+        });
+      }
+
+      return NextResponse.json({ message: "OK", user: newUser });
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  if (eventType === "user.updated") {
+    try {
+      const { id, image_url, first_name, last_name, username } = evt.data;
+
+      const user = {
+        clerkId: id,
+        firstName: first_name,
+        lastName: last_name,
+        username: username!,
+        photo: image_url,
+      };
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          clerkId: user.clerkId,
+        },
+        data: user,
+      });
+
+      return NextResponse.json({ message: "OK", user: updatedUser });
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  if (eventType === "user.deleted") {
+    try {
+      const { id } = evt.data;
+
+      const deletedUser = await prisma.user.delete({
+        where: {
+          clerkId: id,
+        },
+      });
+
+      return NextResponse.json({ message: "OK", status: 200 });
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   return new Response("", { status: 200 });
