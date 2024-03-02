@@ -3,17 +3,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "../db";
 
-export default async function Home() {
-  await prisma.user.create({
-    data: {
-      clerkId: "fsg",
-      email: "fsg",
-      username: "cementosss",
-      firstName: "Bohdan",
-      lastName: "Cementi",
-      photo: "nemaye",
-    },
-  });
+export default function Home() {
+  let eventsList;
+  async function createEvent() {
+    await prisma.user.create({
+      data: {
+        clerkId: "pupsik",
+        email: "daf",
+        username: "cementis",
+        firstName: "sosal",
+        lastName: "ebal",
+        photo: "nema",
+      },
+    });
+
+    eventsList = await prisma.user.findMany();
+  }
   return (
     <>
       <section className="bg-primary-50 bg-dotten-pattern bg-contain py-5 md:py-10">
@@ -53,6 +58,9 @@ export default async function Home() {
           Search CategoryFilter
         </div>
       </section>
+
+      <button onClick={createEvent}>Create</button>
+      {eventsList}
     </>
   );
 }
