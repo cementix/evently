@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
@@ -17,12 +17,11 @@ model User {
   photo           String
   createdAt       DateTime @default(now())
   updatetAt       DateTime @updatedAt
-  orders          Order[]
   organizedEvents Event[]
+  orders          Order[]
 }
 
 model Event {
-  id            String    @id @default(uuid())
   title         String
   description   String?
   location      String?
@@ -32,28 +31,29 @@ model Event {
   price         String?
   isFree        Boolean?  @default(false)
   url           String?
-  category      Category  @relation(fields: [categoryName], references: [name])
-  categoryName  String
-  organizer     User      @relation(fields: [organizerId], references: [clerkId])
-  organizerId   String
   createdAt     DateTime  @default(now())
   updatetAt     DateTime  @updatedAt
+  categoryName  String
+  id            String    @id @default(uuid())
+  organizerId   String
+  category      Category  @relation(fields: [categoryName], references: [name])
+  organizer     User      @relation(fields: [organizerId], references: [clerkId])
   orders        Order[]
 }
 
 model Category {
   id        String   @id @default(uuid())
   name      String   @unique
-  events    Event[]
   createdAt DateTime @default(now())
   updatetAt DateTime @updatedAt
+  events    Event[]
 }
 
 model Order {
   stripeId    String @unique
   totalAmount String
-  event       Event  @relation(fields: [eventId], references: [id])
   eventId     String
-  buyer       User   @relation(fields: [userId], references: [clerkId])
   userId      String
+  event       Event  @relation(fields: [eventId], references: [id])
+  buyer       User   @relation(fields: [userId], references: [clerkId])
 }

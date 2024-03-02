@@ -1,18 +1,36 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "clerkId" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "photo" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatetAt" TIMESTAMP(3) NOT NULL,
 
-  - The primary key for the `Event` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - Added the required column `categoryName` to the `Event` table without a default value. This is not possible if the table is not empty.
-  - The required column `id` was added to the `Event` table with a prisma-level default value. This is not possible if the table is not empty. Please add this column as optional, then populate it before making it required.
-  - Added the required column `organizerId` to the `Event` table without a default value. This is not possible if the table is not empty.
+    CONSTRAINT "User_pkey" PRIMARY KEY ("clerkId")
+);
 
-*/
--- AlterTable
-ALTER TABLE "Event" DROP CONSTRAINT "Event_pkey",
-ADD COLUMN     "categoryName" TEXT NOT NULL,
-ADD COLUMN     "id" TEXT NOT NULL,
-ADD COLUMN     "organizerId" TEXT NOT NULL,
-ADD CONSTRAINT "Event_pkey" PRIMARY KEY ("id");
+-- CreateTable
+CREATE TABLE "Event" (
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "location" TEXT,
+    "imageUrl" TEXT NOT NULL,
+    "startDateTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "endDateTime" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "price" TEXT,
+    "isFree" BOOLEAN DEFAULT false,
+    "url" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatetAt" TIMESTAMP(3) NOT NULL,
+    "categoryName" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
+    "organizerId" TEXT NOT NULL,
+
+    CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Category" (
@@ -31,6 +49,15 @@ CREATE TABLE "Order" (
     "eventId" TEXT NOT NULL,
     "userId" TEXT NOT NULL
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_clerkId_key" ON "User"("clerkId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");

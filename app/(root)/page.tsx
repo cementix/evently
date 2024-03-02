@@ -1,24 +1,8 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { prisma } from "../db";
 
 export default function Home() {
-  let eventsList;
-  async function createEvent() {
-    await prisma.user.create({
-      data: {
-        clerkId: "pupsik",
-        email: "daf",
-        username: "cementis",
-        firstName: "sosal",
-        lastName: "ebal",
-        photo: "nema",
-      },
-    });
-
-    eventsList = await prisma.user.findMany();
-  }
   return (
     <>
       <section className="bg-primary-50 bg-dotten-pattern bg-contain py-5 md:py-10">
@@ -53,14 +37,7 @@ export default function Home() {
         <h2 className="h2-bold">
           Trusted by <br /> Thousands of Events
         </h2>
-
-        <div className="flex w-full flex-col gap-5 md:flex-row">
-          Search CategoryFilter
-        </div>
       </section>
-
-      <button onClick={createEvent}>Create</button>
-      {eventsList}
     </>
   );
 }
