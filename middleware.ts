@@ -8,11 +8,6 @@ export default authMiddleware({
     "/api/webhooks/stripe",
     "/api/uploadthing",
   ],
-  ignoredRoutes: [
-    "/api/webhooks/clerk",
-    "/api/webhooks/stripe",
-    "/api/uploadthing",
-  ],
 });
 
 export const config = {
