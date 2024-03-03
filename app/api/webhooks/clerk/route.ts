@@ -74,11 +74,9 @@ export async function POST(req: Request) {
     //     lastName: last_name,
     //     photo: image_url,
     //   };
-
     //   const newUser = await prisma.user.create({
     //     data: user,
     //   });
-
     //   if (newUser) {
     //     await clerkClient.users.updateUserMetadata(id, {
     //       publicMetadata: {
@@ -86,12 +84,10 @@ export async function POST(req: Request) {
     //       },
     //     });
     //   }
-
     //   return NextResponse.json({ message: "OK", user: newUser });
     // } catch (error) {
     //   handleError(error);
     // }
-    console.log("test");
   }
 
   if (eventType === "user.updated") {
